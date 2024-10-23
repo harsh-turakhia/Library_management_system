@@ -1,0 +1,108 @@
+﻿@model LMS_Data_Entity.Dto.UserDto;
+
+@{
+    ViewData["Title"] = "Edit User Page";
+}
+
+
+<div class="container mt-2 p-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="d-flex justify-content-between align-items-center my-4 mx-auto" style="max-width: 600px;">
+                <h2 class="text-center mb-0">Edit user</h2>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Index" asp-controller="Admin" class="btn btn-outline-primary">&lt; Back</a>
+                }
+            </div>
+
+            <form method="post" asp-controller="Admin" asp-action="EditUser" class="d-flex flex-column gap-3">
+                <span asp-validation-summary="ModelOnly" class="text-danger"></span>
+                <input hidden type="hidden" asp-for="UserId" />
+
+                <div class="form-floating">
+                    <input asp-for="Name" type="text" class="form-control" id="Name" required>
+                    <label for="Name">Name</label>
+                    <span class="text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Email" type="email" class="form-control" name="Email" id="Email" required onblur="CheckEmailExist()">
+                    <label for="Email">Email</label>
+                    <span class="text-danger" asp-validation-for="Email" id="CheckEmailExistId"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Address" type="text" class="form-control" id="Address" required>
+                    <label for="Address">Address</label>
+                    <span class="text-danger" asp-validation-for="Address"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="PhoneNumber" type="text" class="form-control" id="PhoneNumber" required>
+                    <label for="PhoneNumber">Phone Number</label>
+                    <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="RoleId" class="form-select" id="role" required name="RoleId">
+                        @foreach (var role in Model.RoleList)
+                        {
+                            if (role.RoleId != 1)
+                            {
+                                <option value="@role.RoleId">@role.RoleName</option>
+                            }
+
+                        }
+                    </select>
+                    <span asp-validation-for="RoleId" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function CheckEmailExist() {
+
+        const origianlEmail = "@Model.Email";
+        const email = document.getElementById("Email").value;
+        const errorMessage = document.getElementById("CheckEmailExistId");
+
+        errorMessage.textContent = "";
+
+        if (origianlEmail != email) {
+            $.ajax({
+                method: "POST",
+                url: "/Admin/CheckEmailExist",
+                data: { email: email },
+                success: function (response) {
+                    if (response) {
+                        errorMessage.textContent = "This email already exist!";
+                        isEmailValid = false;
+                    }
+                    else {
+                        errorMessage.textContent = "";
+                        isEmailValid = true;
+                    }
+                },
+                error: function () {
+                    errorMessage.textContent = "";
+                    isEmailValid = true;
+                }
+            })
+        }
+
+    }
+
+
+</script>

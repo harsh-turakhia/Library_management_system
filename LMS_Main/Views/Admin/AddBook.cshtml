@@ -1,0 +1,265 @@
+﻿@model LMS_Data_Entity.Dto.AddEditBookDto;
+
+@{
+    ViewData["Title"] = "Add Book Page";
+}
+
+<div class="container mt-2 p-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="d-flex justify-content-between align-items-center my-4 mx-auto" style="max-width: 600px;">
+                <h2 class="text-center mb-0">Add Book</h2>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Index" asp-controller="Admin" class="btn btn-outline-primary">&lt; Back</a>
+                }
+            </div>
+
+            <form method="post" asp-controller="Admin" asp-action="AddBook" class="d-flex flex-column gap-3">
+                <span asp-validation-summary="ModelOnly" class="text-danger"></span>
+
+                <div class="form-floating">
+                    <input asp-for="Title" type="text" class="form-control" id="Title" required>
+                    <label for="Title">Title</label>
+                    <span class="text-danger" asp-validation-for="Title"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Copies" type="number" class="form-control" id="Copies" required>
+                    <label for="Copies">Copies</label>
+                    <span class="text-danger" asp-validation-for="Copies"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Price" type="number" class="form-control" id="Price" required>
+                    <label for="Price">Price</label>
+                    <span class="text-danger" asp-validation-for="Price"></span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="PublicationId" class="form-select" id="pubDropdown" required>
+                        <option value="" disabled selected>Select Publication</option>
+                        @if (Model.PublicationsList != null && Model.PublicationsList.Any())
+                        {
+                            foreach (var pub in Model.PublicationsList)
+                            {
+                                <option value="@pub.PublicationId">@pub.PublicationName</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="PublicationId" class="text-danger"></span>
+                    <span class="text-primary text-end">
+                        <a class="mt-2 d-flex justify-content-end" style="text-decoration : none">
+                            <span class="btn btn-outline-primary" data-bs-toggle="modal"
+                                  data-bs-target="#pubModalId">Add Publication</span>
+                        </a>
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="AuthorId" class="form-select" id="authDropdown" required>
+                        <option value="" disabled selected>Select Author</option>
+                        @if (Model.AuthorsList != null && Model.AuthorsList.Any())
+                        {
+                            foreach (var author in Model.AuthorsList)
+                            {
+                                <option value="@author.AuthorId">@author.AuthorName</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="AuthorId" class="text-danger"></span>
+                    <span class="text-primary text-end">
+                        <a class="mt-2 d-flex justify-content-end" style="text-decoration : none">
+                            <span class="btn btn-outline-primary" data-bs-toggle="modal"
+                                  data-bs-target="#authModalId">Add Author</span>
+                        </a>
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="LanguageId" class="form-select" id="langDropdown" required>
+                        <option value="" disabled selected>Select Language</option>
+                        @if (Model.LanguageList != null && Model.LanguageList.Any())
+                        {
+                            foreach (var lang in Model.LanguageList)
+                            {
+                                <option value="@lang.LanguageId">@lang.LanguageName</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="LanguageId" class="text-danger"></span>
+                    <span class="text-primary text-end">
+                        <a class="mt-2 d-flex justify-content-end" style="text-decoration : none">
+                            <span class="btn btn-outline-primary" data-bs-toggle="modal"
+                                  data-bs-target="#langModalId">Add Language</span>
+                        </a>
+                    </span>
+                </div>
+
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </form>
+
+            <div id="divModalId"></div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="langModalId" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <form id="langFormId" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Language</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="py-2 px-3" for="langId">Language Name</label>
+                        <input type="text" name="languageName" class="form-control" id="langId" placeholder="Enter language name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="AddLangHandler()">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="pubModalId" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <form id="pubFormId" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Publication</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class ="py-2 px-3" for="pubId">Publication Name</label>
+                        <input type="text" name="publicationName" class="form-control" id="pubId" placeholder="Enter Publication name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="AddPubHandler()">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="authModalId" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <form id="authFormId" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Author</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="py-2 px-3" for="authId">Author Name</label>
+                        <input type="text" name="authorName" class="form-control" id="authId" placeholder="Enter Author name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="AddAuthHandler()">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+
+    function AddPubHandler() {
+        const formdata = $('#pubFormId').serialize();
+
+        $.ajax({
+            method: "POST",
+            url: "/Admin/AddPublication",
+            data: formdata,
+            success: function (response) {
+                console.log("Response received:", response);
+
+                $('#pubModalId').modal('hide');
+
+                $('#pubDropdown').empty();
+                $('#pubDropdown').append(`<option value="" selected disabled>Select Publication</option>`);
+                response.forEach(pub => {
+                    $('#pubDropdown').append(`<option value="${pub.publicationId}">${pub.publicationName}</option>`);
+                });
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+
+        })
+    }
+
+
+    function AddLangHandler() {
+        var formdata = $('#langFormId').serialize();
+
+        $.ajax({
+            method: "POST",
+            url: "/Admin/AddLanguage",
+            data: formdata,
+            success: function (response) {
+
+                $('#langModalId').modal('hide');
+
+                $('#langDropdown').empty();
+                $('#langDropdown').append(`<option value="" selected disabled>Select Language</option>`);
+                response.forEach(lang => {
+                    $('#langDropdown').append(`<option value="${lang.languageId}">${lang.languageName}</option>`);
+                });
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        })
+    }
+
+
+    function AddAuthHandler() {
+        var formdata = $('#authFormId').serialize();
+
+        $.ajax({
+            method: "POST",
+            url: "/Admin/AddAuthor",
+            data: formdata,
+            success: function (response) {
+                $('#authModalId').modal('hide');
+
+                $('#authDropdown').empty();
+                $('#authDropdown').append(`<option value="" selected disabled>Select Author</option>`);
+                response.forEach(author => {
+                    $('#authDropdown').append(`<option value="${author.authorId}">${author.authorName}</option>`);
+                });
+            },
+            error: function () {
+                console.log(err.responseText);
+            }
+        })
+    }
+
+
+
+</script>

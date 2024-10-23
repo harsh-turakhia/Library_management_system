@@ -1,0 +1,100 @@
+﻿@model LMS_Data_Entity.Dto.RegisterDto;
+@{
+    ViewData["Title"] = "Signup Page";
+}
+
+<div class="container mt-5 p-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="text-center mb-4">Signup</h2>
+
+            <form method="post" asp-controller="Home" asp-action="Register" class="d-flex flex-column gap-3">
+                <span asp-validation-summary="ModelOnly" class="text-danger"></span>
+
+                <div class="form-floating">
+                    <input asp-for="Name" type="text" class="form-control" id="Name" required>
+                    <label for="Name">Name</label>
+                    <span class="text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Email" type="email" class="form-control" id="Email" required>
+                    <label for="Email">Email</label>
+                    <span class="text-danger" asp-validation-for="Email"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Password" type="password" class="form-control" id="Password" required>
+                    <label for="Password">Password</label>
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Address" type="text" class="form-control" id="Address" required>
+                    <label for="Address">Address</label>
+                    <span class="text-danger" asp-validation-for="Address"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="PhoneNumber" type="text" class="form-control" id="PhoneNumber" required>
+                    <label for="PhoneNumber">Phone Number</label>
+                    <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                </div>
+
+                @*<div class="mb-3">
+                    <select asp-for="Role" class="form-select" id="role" required>
+                        <option value="" disabled selected>Select your role</option>
+                        @if (Model.RoleList != null && Model.RoleList.Any())
+                        {
+                            foreach (var role in Model.RoleList)
+                            {
+                                if (@role.RoleName == "Admin")
+                                {
+                                    <option value="@role.RoleId" disabled>@role.RoleName</option>
+                                }
+                                else
+                                {
+                                    <option value="@role.RoleId">@role.RoleName</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>*@
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Signup</button>
+                </div>
+
+            </form>
+
+            <div class="text-center my-4">
+                <p>
+                    Already have an account?
+                    <a asp-action="Login" asp-controller="Home" class="btn btn-outline-primary">
+                        Login here
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const passwordInput = document.getElementById('Password');
+    const togglePassword = document.getElementById('togglePassword');
+
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        togglePassword.classList.toggle('bi-eye');
+        togglePassword.classList.toggle('bi-eye-slash');
+    });
+</script>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

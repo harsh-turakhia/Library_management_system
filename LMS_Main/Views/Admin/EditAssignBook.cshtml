@@ -1,0 +1,73 @@
+﻿@model LMS_Data_Entity.Dto.AssignedBooksDto;
+
+@{
+    ViewData["Title"] = "Assign Book Page";
+}
+
+<div class="container mt-2 p-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center my-4 mx-auto" style="max-width: 600px;">
+                <h2 class="text-center mb-0">Return Book</h2>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Index" asp-controller="Admin" class="btn btn-outline-primary">&lt; Back</a>
+                }
+            </div>
+
+            <form method="post" asp-controller="Admin" asp-action="EditAssignBook" class="d-flex flex-column gap-3" id="assignBookForm">
+
+                <span asp-validation-summary="ModelOnly" class="text-danger"></span>
+                <input hidden type="hidden" asp-for="@Model.AssignedId" />
+
+                <div class="mb-3">
+                    <select asp-for="UserId" class="form-select" id="UserId" name="UserId">
+                        <option value="" selected>@Model.UserName</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="BookId" class="form-select" id="BookId" name="BookId">
+                        <option value="" selected>@Model.BookName</option>
+                    </select>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="IssuedDate" type="date" value="@Model.IssuedDate" class="form-control" id="IssuedDate" name="IssuedDate">
+                    <label for="ReturnDate">@Model.IssuedDate</label>
+                    <span asp-validation-for="IssuedDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="ReturnDate" type="date" value="@Model.ReturnDate" class="form-control" id="ReturnDate" name="ReturnDate">
+                    <label for="ReturnDate">@Model.ReturnDate</label>
+                    <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="Status" class="form-select" id="Status" required name="Status">
+                        @foreach (var stat in Model.StatusList)
+                        {
+                            if (stat.StatusName == "Returned")
+                            {
+                                <option selected value="@stat.StatusId">@stat.StatusName</option>
+                            }
+                            else
+                            {
+                                <option disabled value="@stat.StatusId">@stat.StatusName</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

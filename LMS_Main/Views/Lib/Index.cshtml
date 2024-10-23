@@ -1,0 +1,636 @@
+﻿@model LMS_Data_Entity.Dto.LibHomePageDto;
+
+
+<div class="container-fluid mt-5 bg-tertiary" style="padding : 0 4rem;">
+
+    <div class="py-6">
+
+        <!-- Card stats -->
+        <div class="row g-6 mb-6">
+
+            <div class="col-xl-4 col-sm-6 col-12">
+                <div class="card shadow border-0 bg-primary" style="--bs-bg-opacity: .2;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <span class="h2 font-semibold text-sm d-block mb-2">User</span>
+                                <span class="h2 font-bold">@Model.TotalUserCount</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-primary text-white py-2 px-3 text-lg rounded-circle">
+                                    <i class="bi bi-journal-medical fs-5"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 mb-0 text-sm d-flex justify-content-end">
+                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AddUser" asp-controller="Lib">Add User</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-sm-6 col-12">
+                <div class="card shadow border-0 bg-primary" style="--bs-bg-opacity: .2;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <span class="h2 font-semibold text-sm d-block mb-2">Books</span>
+                                <span class="h2 font-bold mb-0">@Model.TotalBooksCount</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-primary text-white py-2 px-3 text-lg rounded-circle">
+                                    <i class="bi bi-journal-medical fs-5"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 mb-0 text-sm d-flex justify-content-end">
+                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AddBook" asp-controller="Lib">Add Book</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-sm-6 col-12">
+                <div class="card shadow border-0 bg-primary" style="--bs-bg-opacity: .2;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <span class="h2 font-semibold text-sm d-block mb-2">Assigned Books</span>
+                                <span class="h2 font-bold mb-0">@Model.TotalAssignedCopies</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon icon-shape bg-primary text-white py-2 px-3 text-lg rounded-circle">
+                                    <i class="bi bi-journal-medical fs-5"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 mb-0 text-sm d-flex justify-content-end">
+                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AssignBook" asp-controller="Lib">Assign Book</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="my-4 py-4">
+
+        <ul class=" nav nav-pills nav-fill border border-1">
+            <li class="border-2 nav-item" role="presentation">
+                <a class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button"
+                   role="tab" aria-controls="user" aria-selected="true" href="" style="opacity: 0.9">
+                    Users
+                </a>
+            </li>
+            <li class="border-2 nav-item" role="presentation">
+                <a class="nav-link" id="book-tab" data-bs-toggle="tab" data-bs-target="#book" type="button"
+                   role="tab" aria-controls="book" aria-selected="false" href="" style="opacity: 0.9">
+                    Total Books
+                </a>
+            </li>
+            <li class="border-2 nav-item" role="presentation">
+                <a class="nav-link" id="assignedBook-tab" data-bs-toggle="tab" data-bs-target="#assignedBook" type="button"
+                   role="tab" aria-controls="assignedBook" aria-selected="false" href="" style="opacity: 0.9">
+                    Assigned Books
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-4" id="myTabContent">
+
+            <!-- User Tab Table -->
+            <div class="tab-pane fade show active fs-5" id="user" role="tabpanel" aria-labelledby="user-tab">
+
+                <div class=" row my-3">
+                    <div class="col-md-12 px-2">
+                        <div class="input-group">
+                            <input type="text" class="border-2 rounded-3 form-control" id="searchUser" placeholder="Search Users..." aria-label="Search">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive pt-4">
+                    <table class="table table-hover text-center" id="userTableId">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">
+                                    Name
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Email
+                                    @*<span onclick=""><i class="bi bi-arrow-down-up"></i></span>*@
+                                </th>
+                                <th scope="col">
+                                    Phone Number
+                                    @*<span onclick=""><i class="bi bi-arrow-down-up"></i></span>*@
+                                </th>
+                                <th scope="col">
+                                    Address
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Role
+                                </th>
+                                <th scope="col">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider" id="userTableDivId">
+                            @foreach (var user in Model.UserList)
+                            {
+                                <tr id="userId-@user.UserId">
+                                    <td>@user.Name</td>
+                                    <td>@user.Email</td>
+                                    <td>@user.PhoneNumber</td>
+                                    <td>@user.Address</td>
+                                    <td>@user.RoleName</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditUser" asp-route-id="@user.UserId" title="Edit User">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                            <button class="btn btn-outline-danger removeUserIcon" data-userid="@user.UserId" data-bs-toggle="modal" data-bs-target="#DeleteUserModalId" title="Delete User">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+            <!-- Book Tab Table -->
+            <div class="tab-pane fade fs-5" id="book" role="tabpanel" aria-labelledby="book-tab">
+
+                <div class="row my-3">
+                    <div class="col-md-12 px-2">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchBook" placeholder="Search Books..." aria-label="Search">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">
+                                    Title
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Publication
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Author
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Language
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Copies
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Price
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookTableDivId">
+                            @foreach (var book in Model.BooksList)
+                            {
+                                <tr id="bookId-@book.BookId">
+                                    <td>@book.Title</td>
+                                    <td>@book.PublicationName</td>
+                                    <td>@book.AuthorName</td>
+                                    <td>@book.LanguageName</td>
+                                    <td>@book.Copies</td>
+                                    <td>@book.Price</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            @if (book.RemainingCopies > 0)
+                                            {
+                                                <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="AssignBookByBook" asp-route-id="@book.BookId" title="Assign Book">
+                                                    <i class="bi bi-file-plus-fill"></i>
+                                                </a>
+                                                <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditBook" asp-route-id="@book.BookId" title="Edit Book">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+                                                <button class="btn btn-outline-danger removeBookIcon" data-bookId="@book.BookId" data-bs-toggle="modal" data-bs-target="#DeleteBookModalId" title="Delete Book">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn btn-outline-primary me-2 disabled" asp-controller="Lib" asp-action="AssignBookByBook" asp-route-id="@book.BookId" title="Assign Book">
+                                                    <i class="bi bi-file-plus-fill"></i>
+                                                </a>
+                                                <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditBook" asp-route-id="@book.BookId" title="Edit Book">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+                                                <button class="btn btn-outline-danger removeBookIcon" data-bookId="@book.BookId" data-bs-toggle="modal" data-bs-target="#DeleteBookModalId" title="Delete Book">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </button>
+                                            }
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Assigned Book Tab Table -->
+            <div class="tab-pane fade fs-5" id="assignedBook" role="tabpanel" aria-labelledby="assignedBook-tab">
+
+                <div class="row my-3">
+                    <div class="col-md-12 px-2">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchAssignBook" placeholder="Search Assigned Books..." aria-label="Search">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">
+                                    Title
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Assigned To
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Issued Date
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Return Date
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Returned On
+                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
+                                </th>
+                                <th scope="col">
+                                    Status
+                                </th>
+                                <th>
+                                    Actions
+
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignedBookTableDivId">
+                            @foreach (var assignBook in Model.AssignedBooksList)
+                            {
+                                <tr>
+                                    <td>@assignBook.BookName</td>
+                                    <td>@assignBook.UserName</td>
+                                    @*<td>Lib</td>*@
+                                    <td>@assignBook.IssuedDate</td>
+                                    <td>@assignBook.ReturnDate</td>
+                                    <td>@assignBook.ReturnedOn</td>
+                                    <td>@assignBook.StatusName</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditAssignBook" asp-route-id="@assignBook.AssignedId" title="Edit Book">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="DeleteBookModalId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Book</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to remove this book?
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancel" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="removeBookBtnId" class="btn btn-danger">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="DeleteUserModalId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete User</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to remove this user?
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancel" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="removeUserBtnId" class="btn btn-danger">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        // User Search
+        $('#searchUser').on('keyup', function () {
+            console.log(1)
+
+            var query = $(this).val();
+            if (query.length >= 0) {
+
+                $.ajax({
+                    method: "GET",
+                    url: "/Lib/AdminUserSearchHandler",
+                    data: { query: query },
+
+                    success: function (response) {
+                        console.log(response);
+
+                        $('#userTableDivId').empty();
+                        if (response.length) {
+                            $.each(response, function (index, user) {
+                                $('#userTableDivId').append(`
+                                                                                                                                        <tr class="text-center">
+                                                                                                                                            <td>${user.name}</td>
+                                                                                                                                            <td>${user.email}</td>
+                                                                                                                                            <td>${user.phoneNumber}</td>
+                                                                                                                                            <td>${user.address}</td>
+                                                                                                                                            <td>${user.roleName}</td>
+                                                                                                                                            <td>
+                                                                                                                                                <div class="d-flex justify-content-center">
+                                                                                                                                                    <div class="me-3 border border-primary">
+                                                                                                                                                        <a class="p-2 rounded-2" href="/Lib/EditUser/${user.userId}">
+                                                                                                                                                            <i class="bi bi-pencil-fill text-primary fs-4"></i>
+                                                                                                                                                        </a>
+                                                                                                                                                    </div>
+                                                                                                                                                    <div class="me-3 border border-danger removeUserIcon" data-userid="${user.userId}" data-bs-toggle="modal" data-bs-target="#DeleteUserModalId">
+                                                                                                                                                        <i class="bi bi-trash3-fill text-danger p-2 fs-4 "></i>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </td>
+                                                                                                                                        </tr>
+                                                                                                                        `);
+                            });
+                        }
+
+                        else {
+                            $('#userTableDivId').append(`
+                                                                                                                                                                                                                                    <tr class="text-center">
+                                                                                                                                                                                                                                         <div>
+                                                                                                                                                                                                                                            <span class="d-flex justify-content-center my-4 text-center h3"> No User found! </span>
+                                                                                                                                                                                                                                          </div>
+                                                                                                                                                                                                                                    </tr>
+                                                                                                                                                                                                                                    `);
+                        }
+                    },
+                    error: function (err) {
+                        console.log("AdminSearchHandler ERROR", err.message);
+                    }
+                });
+            }
+
+        });
+
+        // Book Search
+        $('#searchBook').on('keyup', function () {
+
+            var query = $(this).val();
+            if (query.length >= 0) {
+
+                $.ajax({
+                    method: "GET",
+                    url: "/Lib/AdminBookSearchHandler",
+                    data: { query: query },
+
+                    success: function (response) {
+
+                        console.log(response);
+
+                        $('#bookTableDivId').empty();
+                        if (response.length) {
+                            $.each(response, function (index, book) {
+                                $('#bookTableDivId').append(`
+                                                                                                                                            <tr id="bookId-${book.bookId}">
+                                                                                                                                                <td>${book.title}</td>
+                                                                                                                                                <td>${book.publicationName}</td>
+                                                                                                                                                <td>${book.authorName}</td>
+                                                                                                                                                <td>${book.languageName}</td>
+                                                                                                                                                <td>${book.copies}</td>
+                                                                                                                                                <td>${book.price}</td>
+                                                                                                                                                <td>
+                                                                                                                                                    <div class="d-flex justify-content-center">
+                                                                                                                                                                    <a class="btn btn-outline-primary me-2"  href="/Lib/AssignBookByBook/${book.bookId}" asp-route-id="${book.BookId}" title="Assign Book">
+                                                                                                                                                            <i class="bi bi-file-plus-fill"></i>
+                                                                                                                                                        </a>
+                                                                                                                                                                <a class="btn btn-outline-primary me-2"  href="/Lib/EditBook/${book.bookId}" asp-route-id="${book.BookId}" title="Edit Book">
+                                                                                                                                                            <i class="bi bi-pencil-fill"></i>
+                                                                                                                                                        </a>
+                                                                                                                                                        <button class="btn btn-outline-danger removeBookIcon" data-bookId="${book.bookId}" data-bs-toggle="modal" data-bs-target="#DeleteBookModalId" title="Delete Book">
+                                                                                                                                                            <i class="bi bi-trash3-fill"></i>
+                                                                                                                                                        </button>
+                                                                                                                                                    </div>
+                                                                                                                                                </td>
+                                                                                                                                            </tr>
+                                                                                                                                        `);
+                            });
+                        }
+                        else {
+                            $('#bookTableDivId').append(`
+                                                                                                                                                                                                                                 <tr class="text-center">
+                                                                                                                                                                                                                                             <div>
+                                                                                                                                                                                                                                                <span class="d-flex justify-content-center my-4 text-center h3"> No books found! </span>
+                                                                                                                                                                                                                                              </div>
+                                                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                                                        `);
+                        }
+                    },
+                    error: function (err) {
+                        console.log("AdminBookSearchHandler ERROR", err.message);
+                    }
+                });
+            }
+
+        });
+
+        // Assigned Book Search
+        $('#searchAssignBook').on('keyup', function () {
+            var query = $(this).val();
+
+            if (query.length >= 0) {
+                $.ajax({
+                    method: "GET",
+                    url: "/Lib/AdminAssignBookSearchHandler",
+                    data: { query: query },
+
+                    success: function (response) {
+                        console.log(response);
+
+                        $('#assignedBookTableDivId').empty();
+
+                        if (response) {
+                            $.each(response, function (index, assignBook) {
+                                $('#assignedBookTableDivId').append(`
+                                                                                                                                                <tr>
+                                                                                                                                                    <td>${assignBook.bookName}</td>
+                                                                                                                                                    <td>${assignBook.userName}</td>
+                                                                                                                                                    <td>${assignBook.issuedDate}</td>
+                                                                                                                                                    <td>${assignBook.returnDate}</td>
+                                                                                                                                                    <td>${assignBook.returnedOn}</td>
+                                                                                                                                                    <td>${assignBook.statusName}</td>
+                                                                                                                                                    <td>
+                                                                                                                                                        <div class="d-flex justify-content-center">
+                                                                                                                                                                                <a class="btn btn-outline-primary me-2"  href="/Lib/EditAssignBook/${assignBook.AssignedId}" asp-route-id="${assignBook.AssignedId}" title="Edit Book">
+                                                                                                                                                                <i class="bi bi-pencil-fill"></i>
+                                                                                                                                                            </a>
+                                                                                                                                                        </div>
+                                                                                                                                                    </td>
+                                                                                                                                                </tr>
+                                                                                                                                        `)
+                            })
+                        }
+                        else {
+                            $('#assignedBookTableDivId').append(`
+                                                                                                                                                                                                                         <tr class="text-center">
+                                                                                                                                                                                                                                     <div>
+                                                                                                                                                                                                                                        <span class="d-flex justify-content-center my-4 text-center h3"> No books found! </span>
+                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                </tr>
+                                                                                                                                                                                                                    `);
+                        }
+                    },
+                    error: function (err) {
+                        console.log("AdminAssignBookSearchHandler ERROR", err.message);
+                    }
+                });
+            }
+        })
+
+        // Remove Book
+        var bookId, UserId;
+
+        $(document).on('click', '.removeBookIcon', function () {
+            bookId = $(this).data('bookid');
+        });
+
+        $('#removeBookBtnId').on('click', function () {
+            $.ajax({
+                method: "POST",
+                url: "/Lib/LibRemoveBook",
+                data: { bookId: bookId },
+
+                success: function (response) {
+                    if (response.success) {
+                        $('#DeleteBookModalId').modal('hide');
+                        $('#bookId-' + bookId).remove();
+                    }
+                    else {
+                        console.log("Book could not be removed");
+                    }
+                },
+
+                error: function (err) {
+                    console.log("AdminRemoveBook ERROR", err);
+                }
+            });
+        });
+
+        // Remove User
+        $(document).on('click', '.removeUserIcon', function () {
+            UserId = $(this).data('userid');
+        });
+
+        $('#removeUserBtnId').on('click', function () {
+            $.ajax({
+                method: "POST",
+                url: "/Lib/LibRemoveUser",
+                data: { UserId: UserId },
+
+                success: function (response) {
+                    if (response.success) {
+                        $('#DeleteUserModalId').modal('hide');
+                        $('#userId-' + UserId).remove();
+                    } else {
+                        console.log("User could not be removed");
+                    }
+
+                    //$('#DeleteUserModalId').modal('hide');
+                    //$('#userId-' + UserId).remove();
+                },
+
+                error: function (err) {
+                    console.log("AdminRemoveUser ERROR", err);
+                }
+            });
+        });
+
+    });
+
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        const activeTab = localStorage.getItem('activeTab');
+
+        if (activeTab) {
+            const tabToActivate = $('#' + activeTab);
+            if (tabToActivate.length) {
+                $('.nav-link').removeClass('active');
+                $('.tab-pane').removeClass('show active');
+
+                tabToActivate.addClass('active');
+                $($(tabToActivate.data('bs-target'))).addClass('show active');
+            }
+        }
+        $('.nav-link').on('click', function () {
+            localStorage.setItem('activeTab', this.id);
+        });
+    });
+</script>
+
+

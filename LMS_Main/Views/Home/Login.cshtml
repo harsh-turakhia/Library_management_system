@@ -1,0 +1,68 @@
+﻿@model LMS_Data_Entity.Dto.LoginDto;
+
+@{
+    ViewData["Title"] = "Login Page";
+}
+
+<div class="container mt-5 p-5" onload="Clear()">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">Login</h2>
+            <form method="post" asp-action="Login" asp-controller="Home">
+
+                @*<span asp-validation-summary="ModelOnly" class="text-danger"></span>*@
+
+
+                <div class="mb-3 position-relative">
+                    <label for="username" class="form-label">Email</label>
+                    <div class="input-group">
+                        <input asp-for="Email" value="" type="email" class="form-control" id="email" name="email" required placeholder="Enter your registered email" />
+                        <span class="input-group-text"><i class="bi bi-person-circle fs-4 text-secondary"></i></span>
+                    </div>
+                    <span class="text-danger" asp-validation-for="Email"></span>
+                </div>
+
+                <div class="mb-3 position-relative">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input asp-for="Password" value="" type="password" class="form-control" id="password" name="password" required placeholder="Enter your password" />
+                        <span class="input-group-text"><i class="bi bi-eye fs-4 text-secondary" id="togglePassword" style="cursor: pointer;"></i></span>
+                    </div>
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+
+                @*<div asp-validation-summary="ModelOnly" class="text-danger d-grid gap-2 text-center align-content-center"></div>*@
+
+                <div class="d-flex justify-content-center my-4">
+                    <p>
+                        New user?
+                        <a asp-action="Register" asp-controller="Home" class="btn btn-outline-primary">
+                            Signup here
+                        </a>
+                    </p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        const $passwordInput = $('#password');
+        const $togglePassword = $('#togglePassword');
+
+        $togglePassword.on('click', function () {
+            const type = $passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            $passwordInput.attr('type', type);
+            $togglePassword.toggleClass('bi-eye bi-eye-slash');
+        });
+
+    });
+</script>

@@ -1,0 +1,118 @@
+﻿@model LMS_Data_Entity.Dto.AssignBookDto;
+
+@{
+    ViewData["Title"] = "Assign Book Page";
+}
+
+<div class="container mt-2 p-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center my-4 mx-auto" style="max-width: 600px;">
+                <h2 class="text-center mb-0">Assign Book</h2>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Index" asp-controller="Admin" class="btn btn-outline-primary">&lt; Back</a>
+                }
+            </div>
+
+            <form method="post" asp-controller="Admin" asp-action="AssignBook" class="d-flex flex-column gap-3" id="assignBookForm">
+
+                <span asp-validation-summary="ModelOnly" class="text-danger"></span>
+
+                <div class="mb-3">
+                    <select asp-for="UserId" class="form-select" id="UserId" required name="UserId">
+                        <option value="" selected>Select User</option>
+                        @foreach (var user in Model.UserList)
+                        {
+                            <option value="@user.UserId">@user.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="BookId" class="form-select" id="BookId" required name="BookId">
+                        <option value="" selected>Select from this available Book</option>
+                        @foreach (var book in Model.BooksList)
+                        {
+                            <option value="@book.BookId">@book.Title</option>
+                        }
+                    </select>
+                    <span asp-validation-for="BookId" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="IssuedDate" type="date" class="form-control" id="IssuedDate" name="IssuedDate" required onchange="CheckIssueDate()">
+                    <label for="IssuedDate">Issued Date</label>
+                    <span class="text-danger" asp-validation-for="IssuedDate" id=IssueDateId></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="ReturnDate" type="date" class="form-control" id="ReturnDate" name="ReturnDate" required onchange="CheckReturnDate()">
+                    <label for="ReturnDate">Return Date</label>
+                    <span class="text-danger py-1" asp-validation-for="ReturnDate" id="ReturnDateId"></span>
+                </div>
+
+                <div class="mb-3">
+                    <select asp-for="StatusId" class="form-select" id="StatusId" required name="StatusId">
+                        @foreach (var stat in Model.StatusList)
+                        {
+                            if (stat.StatusName == "Assigned")
+                            {
+                                <option selected value="@stat.StatusId">@stat.StatusName</option>
+                            }
+                            else
+                            {
+                                <option disabled value="@stat.StatusId">@stat.StatusName</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="BookId" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    $(function () {
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+        var maxDate = year + '-' + month + '-' + day;
+
+        $('#IssuedDate').attr('min', maxDate);
+        $('#ReturnDate').attr('min', maxDate);
+    });
+
+    function CheckReturnDate() {
+
+        let id = $('#IssuedDate').val();
+        let rd = $('#ReturnDate').val();
+
+        let errorMessage = document.getElementById("ReturnDateId");
+        errorMessage.textContent = "";
+
+        if (rd > id) {
+            errorMessage.textContent = "";
+        }
+        else {
+            errorMessage.textContent = "Return date should be more than issue date";
+        }
+    }
+
+</script>
