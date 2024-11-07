@@ -5,8 +5,8 @@
 
     <div class="">
 
-      @*  <div class="col-md-8 align-center justify-content-center text-center">
-            <input type="text" name="searchBar" class="form-control p-1"/>
+        @*  <div class="col-md-8 align-center justify-content-center text-center">
+        <input type="text" name="searchBar" class="form-control p-1"/>
         </div>*@
 
         <div class="d-flex me-2 justify-content-end text-center">
@@ -31,37 +31,47 @@
                 <tbody id="bookTableDivId">
                     @foreach (var book in @Model.AssignedBooksList)
                     {
-                        if (book.StatusName == "Assigned")
+                        var today = (DateTime.Now).ToLongDateString();
+                        var issuedDate = book.IssuedDate.ToLongDateString();
+                        string rowClass;
+
+                        if (issuedDate == today)
                         {
-                            <tr class="text-center bg-primary text-white fs-5 bg-opacity-75">
-                                <td>@book.BookName</td>
-                                <td>@book.IssuedDate</td>
-                                <td>@book.ReturnDate</td>
-                                <td>@book.ReturnedOn</td>
-                                <td>@book.StatusName</td>
-                            </tr>
+                            rowClass = "bg-warning text-white fs-5 bg-opacity-75 fw-bold";
+                        }
+                        else if (book.StatusName == "Assigned")
+                        {
+                            rowClass = "bg-primary text-white fs-5 bg-opacity-75";
                         }
                         else if (book.StatusName == "Returned")
                         {
-                            <tr class="text-center bg-success text-white fs-5 bg-opacity-75">
+                            rowClass = "bg-success text-white fs-5 bg-opacity-75";
+                        }
+                        else
+                        {
+                            rowClass = "bg-warning text-white fs-5 bg-opacity-75";
+                        }
+
+                        if (rowClass == "bg-warning text-white fs-5 bg-opacity-75 fw-bold")
+                        {
+                            <tr class="text-center @rowClass">
                                 <td>@book.BookName</td>
                                 <td>@book.IssuedDate</td>
-                                <td>@book.ReturnDate</td>
-                                <td>@book.ReturnedOn</td>
+                                <td><mark>@book.ReturnDate.ToString("yyyy-MM-dd")</mark></td>
+                                <td>@book.ReturnedOn?.ToString("yyyy-MM-dd")</td>
                                 <td>@book.StatusName</td>
                             </tr>
                         }
                         else
                         {
-                            <tr class="text-center bg-warning text-white fs-5 bg-opacity-75">
+                            <tr class="text-center @rowClass">
                                 <td>@book.BookName</td>
                                 <td>@book.IssuedDate</td>
-                                <td>@book.ReturnDate</td>
-                                <td>@book.ReturnedOn</td>
+                                <td>@book.ReturnDate.ToString("yyyy-MM-dd")</td>
+                                <td>@book.ReturnedOn?.ToString("yyyy-MM-dd")</td>
                                 <td>@book.StatusName</td>
                             </tr>
                         }
-
                     }
                 </tbody>
             </table>

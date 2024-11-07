@@ -1,0 +1,73 @@
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.3s;
+}
+
+    .nav-tabs .nav-link.active {
+        background-color: #007bff; /* Active Tab Color */
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.5);
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: #0056b3; /* Hover Color */
+        color: white;
+    }
+
+.tab-content {
+    border: 1px solid #007bff;
+    border-radius: 0.5rem;
+    padding: 20px;
+    background-color: #f8f9fa; /* Light Background for Content */
+}
+
+
+
+.table-primary tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.2); /* Adjust for the user table */
+}
+
+.table-success tbody tr:hover {
+    background-color: rgba(40, 167, 69, 0.6); /* Adjust for the book table */
+}
+
+.table-info tbody tr:hover {
+    background-color: rgba(23, 162, 184, 0.2); /* Adjust for the assigned book table */
+}
+
+/* Default styles for tabs */
+.nav-link {
+    color: #343a40; /* Dark text */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    /* Active styles based on cards */
+    .nav-link.active {
+        background-color: rgba(0, 123, 255, 0.2); /* Light blue for Users */
+        color: #0d6efd; /* Blue text */
+    }
+
+#book-tab.active {
+    background-color: rgba(40, 167, 69, 0.8); /* Light green for Books */
+    color: white; /* Green text */
+}
+
+#assignedBook-tab.active {
+    background-color: rgba(23, 162, 184, 0.8); /* Light teal for Assigned Books */
+    color: white; /* Teal text */
+}
+
+/* Hover styles */
+.nav-link:hover {
+    background-color: rgba(0, 123, 255, 0.6); /* Darker on hover for Users */
+}
+
+#book-tab:hover {
+    background-color: rgba(40, 167, 69, 0.6); /* Darker on hover for Books */
+}
+
+#assignedBook-tab:hover {
+    background-color: rgba(23, 162, 184, 0.6); /* Darker on hover for Assigned Books */
+}

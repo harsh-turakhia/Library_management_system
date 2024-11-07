@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Dynamic Graph";
+}
+
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark" style="opacity: 0.9">
+
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+
+                    <li class="nav-item my-2">
+                        <a href="#" class="nav-link align-middle px-0 text-white fs-3">
+                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                        </a>
+                    </li>
+
+                    <li class="my-2">
+                        <a href="#submenu-users" data-bs-toggle="collapse" class="nav-link px-0 text-white align-middle fs-3 d-flex justify-content-between">
+                            <i class="fs-4 bi-speedometer2"></i>
+                            <span class="ms-2 d-none d-sm-inline pe-1">Users</span>
+                            <i class="mt-1 bi bi-caret-down-fill"></i>
+                        </a>
+                        <ul class="collapse nav flex-column ps-5" id="submenu-users" data-bs-parent="#menu">
+                            <li class="nav-item">
+                                <a href="#" class="fs-3 nav-link px-0 text-white fs-5"> <span class="d-none d-sm-inline">Total Users</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="fs-3 nav-link px-0 text-white fs-5"> <span class="d-none d-sm-inline">Add User</span></a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="my-2">
+                        <a href="#submenu-books" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white fs-3 d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fs-4 bi bi-journal-medical"></i>
+                                <span class="ms-2 d-none d-sm-inline pe-1">Books</span>
+                            </div>
+                            <i class="mt-1 bi bi-caret-down-fill"></i>
+                        </a>
+                        <ul class="collapse nav flex-column ps-5" id="submenu-books" data-bs-parent="#menu">
+                            <li class="nav-item">
+                                <a href="#" class="fs-3 nav-link px-0 text-white fs-5"> <span class="d-none d-sm-inline">Total Books</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="fs-3 nav-link px-0 text-white fs-5"> <span class="d-none d-sm-inline">Add Book</span></a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="my-2">
+                        <a href="#submenu-assigned-books" data-bs-toggle="collapse" class="nav-link px-0 align-middle text-white fs-3 d-flex justify-content-between">
+                            <i class="fs-4 bi bi-journal-plus"></i>
+                            <span class="ms-2 d-none d-sm-inline pe-1">Assigned Books</span>
+                            <i class="mt-1 bi bi-caret-down-fill"></i>
+                        </a>
+                        <ul class="collapse nav flex-column ps-5" id="submenu-assigned-books" data-bs-parent="#menu">
+                            <li class="nav-item">
+                                <a href="#" class="fs-3 nav-link px-0 text-white fs-5"> <span class="d-none d-sm-inline">Total Assigned Books</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="fs-3 nav-link px-0 text-white fs-5"> <span class="d-none d-sm-inline">Add Assigned Book</span></a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+  
+</div>

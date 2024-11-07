@@ -13,7 +13,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.SlidingExpiration = true;
         options.LoginPath = "/Home/Login";
-        options.LogoutPath = "/Home/Logout";
+        options.LogoutPath = "/Home/Logout";    
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.Name = "LMS_Cookie";

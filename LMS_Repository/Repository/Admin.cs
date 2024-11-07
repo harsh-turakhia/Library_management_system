@@ -149,12 +149,12 @@ namespace LMS_Repository.Repository
                                 };
                                 adminPageData.UserList.Add(user);
                             }
-                            
+
                         }
                     }
                     adminPageData.TotalPages = (int)Math.Ceiling((double)adminPageData.UserCountForPagi / pageSize);
                     adminPageData.CurrentPage = currentPage;
-                                     
+
 
                     // User Count
                     using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM AdminCountUser()", connection))
@@ -194,7 +194,6 @@ namespace LMS_Repository.Repository
             }
             return adminPageData;
         }
-
 
         public List<UserDto> AdminUserSearchHandler(string query)
         {
@@ -280,78 +279,43 @@ namespace LMS_Repository.Repository
             }
         }
 
-
         public List<BooksDto> AdminBookSearchHandler(string query)
         {
             var booksList = new List<BooksDto>();
 
             try
             {
-                if (query == null)
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
-                    using (var connection = new NpgsqlConnection(_connectionString))
+                    connection.Open();
+
+                    using (NpgsqlCommand command = new NpgsqlCommand())
                     {
-                        connection.Open();
+                        command.CommandText = "SELECT * FROM admingetsearchedbooks2(@query)";
+                        command.Connection = connection;
+                        command.CommandType = CommandType.Text;
+                        command.Parameters.AddWithValue("@query", query == null ? DBNull.Value : query);
 
-                        using (NpgsqlCommand command = new NpgsqlCommand())
+                        using (var reader = command.ExecuteReader())
                         {
-                            command.CommandText = "SELECT * FROM AdminGetBooks()";
-                            command.Connection = connection;
-                            command.CommandType = CommandType.Text;
-
-                            using (var reader = command.ExecuteReader())
+                            while (reader.Read())
                             {
-                                while (reader.Read())
+                                var book = new BooksDto
                                 {
-                                    var book = new BooksDto
-                                    {
-                                        BookId = reader.GetInt32(reader.GetOrdinal("BookId")),
-                                        Title = reader.GetString(reader.GetOrdinal("Title")),
-                                        AuthorName = reader.GetString(reader.GetOrdinal("AuthorName")),
-                                        PublicationName = reader.GetString(reader.GetOrdinal("PublicationName")),
-                                        LanguageName = reader.GetString(reader.GetOrdinal("LanguageName")),
-                                        Price = reader.GetInt32(reader.GetOrdinal("Price")),
-                                        Copies = reader.GetInt32(reader.GetOrdinal("Copies")),
-                                    };
-                                    booksList.Add(book);
-                                }
+                                    BookId = reader.GetInt32(reader.GetOrdinal("BookId")),
+                                    Title = reader.GetString(reader.GetOrdinal("Title")),
+                                    AuthorName = reader.GetString(reader.GetOrdinal("AuthorName")),
+                                    PublicationName = reader.GetString(reader.GetOrdinal("PublicationName")),
+                                    LanguageName = reader.GetString(reader.GetOrdinal("LanguageName")),
+                                    Price = reader.GetInt32(reader.GetOrdinal("Price")),
+                                    Copies = reader.GetInt32(reader.GetOrdinal("Copies")),
+                                };
+                                booksList.Add(book);
                             }
                         }
                     }
                 }
-                else
-                {
-                    using (var connection = new NpgsqlConnection(_connectionString))
-                    {
-                        connection.Open();
 
-                        using (NpgsqlCommand command = new NpgsqlCommand())
-                        {
-                            command.CommandText = "SELECT * FROM AdminGetSearchedBooks(@query)";
-                            command.Connection = connection;
-                            command.CommandType = CommandType.Text;
-                            command.Parameters.AddWithValue("@query", query);
-
-                            using (var reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    var book = new BooksDto
-                                    {
-                                        BookId = reader.GetInt32(reader.GetOrdinal("BookId")),
-                                        Title = reader.GetString(reader.GetOrdinal("Title")),
-                                        AuthorName = reader.GetString(reader.GetOrdinal("AuthorName")),
-                                        PublicationName = reader.GetString(reader.GetOrdinal("PublicationName")),
-                                        LanguageName = reader.GetString(reader.GetOrdinal("LanguageName")),
-                                        Price = reader.GetInt32(reader.GetOrdinal("Price")),
-                                        Copies = reader.GetInt32(reader.GetOrdinal("Copies")),
-                                    };
-                                    booksList.Add(book);
-                                }
-                            }
-                        }
-                    }
-                }
                 return booksList;
             }
             catch (NpgsqlException dbEx)
@@ -365,7 +329,6 @@ namespace LMS_Repository.Repository
                 return null;
             }
         }
-
 
         public List<AssignedBooksDto> AdminAssignBookSearchHandler(string query)
         {
@@ -506,7 +469,7 @@ namespace LMS_Repository.Repository
             }
         }
 
-        public bool AdminAddUserPost(RegisterDto registerDto, string loggedIn)
+        public bool AdminAddUserPost(AddEditUserDto addEditUserDto, string loggedIn)
         {
             try
             {
@@ -520,12 +483,12 @@ namespace LMS_Repository.Repository
                         command.Connection = connection;
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.AddWithValue("@Name", registerDto.Name);
-                        command.Parameters.AddWithValue("@Email", registerDto.Email);
-                        command.Parameters.AddWithValue("@Password", registerDto.Password);
-                        command.Parameters.AddWithValue("@PhoneNumber", registerDto.PhoneNumber);
-                        command.Parameters.AddWithValue("@Address", registerDto.Address);
-                        command.Parameters.AddWithValue("@Role", registerDto.Role);
+                        command.Parameters.AddWithValue("@Name", addEditUserDto.Name);
+                        command.Parameters.AddWithValue("@Email", addEditUserDto.Email);
+                        command.Parameters.AddWithValue("@Password", addEditUserDto.Password);
+                        command.Parameters.AddWithValue("@PhoneNumber", addEditUserDto.PhoneNumber);
+                        command.Parameters.AddWithValue("@Address", addEditUserDto.Address);
+                        command.Parameters.AddWithValue("@Role", addEditUserDto.RoleId);
                         command.Parameters.AddWithValue("@CreatedBy", loggedIn);
 
                         var result = command.ExecuteNonQuery();
@@ -948,9 +911,9 @@ namespace LMS_Repository.Repository
             }
         }
 
-        public UserDto GetEditUserData(int id)
+        public AddEditUserDto GetEditUserData(int id)
         {
-            var userData = new UserDto();
+            var userData = new AddEditUserDto();
             var UserId = id;
 
             try
@@ -970,7 +933,7 @@ namespace LMS_Repository.Repository
                         {
                             while (reader.Read())
                             {
-                                userData = new UserDto
+                                userData = new AddEditUserDto
                                 {
                                     UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
                                     Name = reader.GetString(reader.GetOrdinal("Name")),
@@ -1015,7 +978,7 @@ namespace LMS_Repository.Repository
             }
         }
 
-        public bool EditUserDataPost(UserDto userDto)
+        public bool EditUserDataPost(AddEditUserDto addEditUserDto)
         {
             try
             {
@@ -1028,12 +991,12 @@ namespace LMS_Repository.Repository
                         command.Connection = connection;
                         command.CommandText = "CALL edituserprocedure(@UserId , @Name , @Email, @Address ,@PhoneNumber, @Role)";
 
-                        command.Parameters.AddWithValue("@UserId", userDto.UserId);
-                        command.Parameters.AddWithValue("@Name", userDto.Name);
-                        command.Parameters.AddWithValue("@Email", userDto.Email);
-                        command.Parameters.AddWithValue("@Address", userDto.Address);
-                        command.Parameters.AddWithValue("@PhoneNumber", userDto.PhoneNumber);
-                        command.Parameters.AddWithValue("@Role", userDto.RoleId);
+                        command.Parameters.AddWithValue("@UserId", addEditUserDto.UserId);
+                        command.Parameters.AddWithValue("@Name", addEditUserDto.Name);
+                        command.Parameters.AddWithValue("@Email", addEditUserDto.Email);
+                        command.Parameters.AddWithValue("@Address", addEditUserDto.Address);
+                        command.Parameters.AddWithValue("@PhoneNumber", addEditUserDto.PhoneNumber);
+                        command.Parameters.AddWithValue("@Role", addEditUserDto.RoleId);
 
                         var result = command.ExecuteNonQuery();
 
@@ -1461,6 +1424,171 @@ namespace LMS_Repository.Repository
             }
         }
 
+
+        public bool AdminEditBookPost(AddEditBookDto addEditBookDto, string loggedIn)
+        {
+            try
+            {
+                using (var connection = new NpgsqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    using (NpgsqlCommand command = new NpgsqlCommand())
+                    {
+                        command.CommandText = "CALL EditBookProcedure(@BookId, @Title, @Copies, @Price, @PublicationId , @LanguageId ,  @AuthorId)";
+                        command.Connection = connection;
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.AddWithValue("@BookId", addEditBookDto.BookId);
+                        command.Parameters.AddWithValue("@Title", addEditBookDto.Title);
+                        command.Parameters.AddWithValue("@Copies", addEditBookDto.Copies);
+                        command.Parameters.AddWithValue("@Price", addEditBookDto.Price);
+                        command.Parameters.AddWithValue("@PublicationId", addEditBookDto.PublicationId);
+                        command.Parameters.AddWithValue("@LanguageId", addEditBookDto.LanguageId);
+                        command.Parameters.AddWithValue("@AuthorId", addEditBookDto.AuthorId);
+
+                        var result = command.ExecuteNonQuery();
+
+                        if (result != 1)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (NpgsqlException dbEx)
+            {
+                Console.WriteLine($"Database error occurred: {dbEx.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
+        }
+
+        public List<UserDto> GetUsers()
+        {
+            var data = new List<UserDto>();
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Get User
+                using (NpgsqlCommand command = new NpgsqlCommand())
+                {
+                    command.CommandText = "SELECT * FROM AdminGetUsers();";
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new UserDto
+                            {
+                                UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                Address = reader.GetString(reader.GetOrdinal("Address")),
+                                PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                RoleId = reader.GetInt32(reader.GetOrdinal("Role")),
+                                RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+                            };
+                            data.Add(user);
+                        }
+                    }
+                };
+            }
+            return data;
+        }
+
+        public List<BooksDto> GetBooks()
+        {
+            var data = new List<BooksDto>();
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Get Books
+                using (NpgsqlCommand command = new NpgsqlCommand())
+                {
+                    command.CommandText = "SELECT * FROM AdminGetBooks();";
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var book = new BooksDto
+                            {
+                                BookId = reader.GetInt32(reader.GetOrdinal("BookId")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                PublicationName = reader.GetString(reader.GetOrdinal("PublicationName")),
+                                AuthorName = reader.GetString(reader.GetOrdinal("AuthorName")),
+                                LanguageName = reader.GetString(reader.GetOrdinal("LanguageName")),
+                                Copies = reader.GetInt32(reader.GetOrdinal("Copies")),
+                                Price = reader.GetInt32(reader.GetOrdinal("Price")),
+                            };
+                            data.Add(book);
+                        }
+                    }
+                };
+            }
+            return data;
+        }
+
+        public List<AssignedBooksDto> GetAssignedBooks()
+        {
+            var data = new List<AssignedBooksDto>();
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Get Assigned Books
+                using (NpgsqlCommand command = new NpgsqlCommand())
+                {
+                    command.CommandText = "SELECT * FROM GetAssignedBooks();";
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var assignedBook = new AssignedBooksDto
+                            {
+                                AssignedId = reader.GetInt32(reader.GetOrdinal("AssignBookId")),
+                                BookId = reader.GetInt32(reader.GetOrdinal("BookId")),
+                                BookName = reader.GetString(reader.GetOrdinal("Title")),
+                                UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                UserName = reader.GetString(reader.GetOrdinal("Name")),
+                                ReturnDate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("ReturnDate"))),
+                                ReturnedOn = reader.IsDBNull(reader.GetOrdinal("ReturnedOn"))
+                                                  ? (DateOnly?)null
+                                                  : DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("ReturnedOn"))),
+                                IssuedDate = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("IssuedDate"))),
+                                Status = reader.GetInt32(reader.GetOrdinal("StatusId")),
+                                StatusName = reader.GetString(reader.GetOrdinal("StatusName")),
+
+                            };
+                            data.Add(assignedBook);
+                        }
+                    }
+                };
+            }
+            return data;
+
+        }
     }
 }
 

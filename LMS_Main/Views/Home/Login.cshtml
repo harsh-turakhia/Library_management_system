@@ -25,7 +25,7 @@
                 <div class="mb-3 position-relative">
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
-                        <input asp-for="Password" value="" type="password" class="form-control" id="password" name="password" required placeholder="Enter your password" />
+                        <input asp-for="Password" value="123456" type="password" class="form-control" id="password" name="password" required placeholder="Enter your password" />
                         <span class="input-group-text"><i class="bi bi-eye fs-4 text-secondary" id="togglePassword" style="cursor: pointer;"></i></span>
                     </div>
                     <span class="text-danger" asp-validation-for="Password"></span>
@@ -55,6 +55,9 @@
 
 <script>
     $(document).ready(function () {
+        localStorage.clear();
+
+
         const $passwordInput = $('#password');
         const $togglePassword = $('#togglePassword');
 
@@ -65,4 +68,5 @@
         });
 
     });
+   
 </script>

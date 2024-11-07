@@ -60,6 +60,7 @@
             <div>No books available.</div>
         }
 
+
     </div>
 
 </div>
@@ -88,45 +89,45 @@
                         if (response) {
                             $.each(response, function (index, book) {
                                 $('#bookCardsContainer').append(`
-                                               <div class="d-flex col-md-4 my-2 rounded-2 p-3 border border-tertiary">
-                                                <div style="flex: 0.4;">
-                                                    <img src="https://www.londonlibrary.co.uk/images/20210408113322.JPG"
-                                                         class="img-fluid rounded"
-                                                         alt="${book.title}"
-                                                         style="height: 200px; object-fit: cover;">
-                                                </div>
+                                                   <div class="d-flex col-md-4 my-2 rounded-2 p-3 border border-tertiary">
+                                                    <div style="flex: 0.4;">
+                                                        <img src="https://www.londonlibrary.co.uk/images/20210408113322.JPG"
+                                                             class="img-fluid rounded"
+                                                             alt="${book.title}"
+                                                             style="height: 200px; object-fit: cover;">
+                                                    </div>
 
-                                                <div class="text-start ps-3 py-2" style="flex: 0.6;">
-                                                    <p class="mb-2 fs-5">
-                                                        <strong>Title : </strong> <span class="fs-4">${book.title}</span>
-                                                    </p>
-                                                    <p class="mb-2">
-                                                        <strong>Written By:</strong> ${book.authorName}
-                                                    </p>
-                                                    <p class="mb-2">
-                                                        <strong>Language</strong> ${book.language}
-                                                    </p>
-                                                    <p class="mb-2">
-                                                        <strong>Publication:</strong> ${book.publication}
-                                                    </p>
-                                                    <p class="mb-2 fs-5">
-                                                        <strong>Price:</strong> <span class="text-success">
-                                                            <span class="bg-success text-white py-1 px-2 rounded opacity-75"> ${book.price}</span>
-                                                        </span>
-                                                    </p>
-                                                </div>
-                        </div>
-                                            `)
+                                                    <div class="text-start ps-3 py-2" style="flex: 0.6;">
+                                                        <p class="mb-2 fs-5">
+                                                            <strong>Title : </strong> <span class="fs-4">${book.title}</span>
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            <strong>Written By:</strong> ${book.authorName}
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            <strong>Language</strong> ${book.language}
+                                                        </p>
+                                                        <p class="mb-2">
+                                                            <strong>Publication:</strong> ${book.publication}
+                                                        </p>
+                                                        <p class="mb-2 fs-5">
+                                                            <strong>Price:</strong> <span class="text-success">
+                                                                <span class="bg-success text-white py-1 px-2 rounded opacity-75"> ${book.price}</span>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                            </div>
+                                                `)
                             })
                         }
                         else {
                             $('#bookCardsContainer').append(`
-                                                                                <div>
-                                                                                    <h1 class="text-center d-flex justify-content-center">
-                                                                                        No Books found!
-                                                                                    </h1>
-                                                                                </div>
-                                                                            `);
+                                                                                    <div>
+                                                                                        <h1 class="text-center d-flex justify-content-center">
+                                                                                            No Books found!
+                                                                                        </h1>
+                                                                                    </div>
+                                                                                `);
                         }
                     },
                     error: function (err) {

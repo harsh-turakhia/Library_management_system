@@ -4,7 +4,9 @@ using LMS_Data_Entity.Dto;
 using LMS_Repository.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using System.Net;
+
 
 namespace LMS_Main.Controllers
 {
@@ -12,10 +14,12 @@ namespace LMS_Main.Controllers
     {
         private readonly INotyfService _notyf;
         private readonly IAdmin _admin;
+
         public AdminController(INotyfService notyf, IAdmin admin)
         {
             _notyf = notyf;
             _admin = admin;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
 
@@ -83,143 +87,6 @@ namespace LMS_Main.Controllers
             {
                 _notyf.Warning("Please try again..!");
                 return View("Index", "Admin");
-            }
-        }
-
-        #endregion
-
-
-        #region Add User
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult AddUser()
-        {
-            try
-            {
-                var data = _admin.GetAddUserData();
-                return View(data);
-            }
-            catch
-            {
-                _notyf.Warning("Please try again..!");
-                return View("Index", "Admin");
-            }
-        }
-
-
-        [HttpPost]
-        public bool CheckEmailExist(string email)
-        {
-            return _admin.CheckEmailExist(email);
-        }
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public IActionResult AddUser(RegisterDto registerDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(registerDto);
-            }
-
-            try
-            {
-                bool check = CheckEmailExist(registerDto.Email);
-
-                if (check)
-                {
-                    _notyf.Error("Email already exist..!");
-                    return View(registerDto);
-                }
-                else
-                {
-                    var loggedIn = "";
-                    if (User.Identity.IsAuthenticated)
-                    {
-                        //loggedIn = Int32.Parse(User.FindFirst("UserId")?.Value);
-                        loggedIn = User.FindFirst("UserId")?.Value;
-                    }
-
-                    var added = _admin.AdminAddUserPost(registerDto, loggedIn);
-
-                    if (added)
-                    {
-                        _notyf.Success("User added successfully..!");
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else
-                    {
-                        _notyf.Error("Error in adding the user..!");
-                        return View(registerDto);
-                    }
-                }
-
-            }
-            catch
-            {
-                _notyf.Warning("Please try again..!");
-                return View(registerDto);
-            }
-        }
-
-        #endregion
-
-
-        #region Add Book
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult AddBook()
-        {
-            try
-            {
-                var data = _admin.GetAddBookData();
-                return View(data);
-            }
-            catch
-            {
-                _notyf.Warning("Please try again..!");
-                return View("Index", "Admin");
-            }
-        }
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public IActionResult AddBook(AddEditBookDto addEditBookDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(addEditBookDto);
-            }
-
-            try
-            {
-                var loggedIn = "";
-                if (User.Identity.IsAuthenticated)
-                {
-                    loggedIn = User.FindFirst("UserId")?.Value;
-                }
-                var added = _admin.AdminAddBookPost(addEditBookDto, loggedIn);
-
-                if (added)
-                {
-                    _notyf.Success("Book added successfully..!");
-                    return RedirectToAction("Index", "Admin");
-                }
-                else
-                {
-                    _notyf.Error("Error in adding the book..!");
-                    return View(addEditBookDto);
-                }
-            }
-            catch
-            {
-                _notyf.Warning("Please try again..!");
-                return View(addEditBookDto);
             }
         }
 
@@ -337,120 +204,6 @@ namespace LMS_Main.Controllers
         #endregion
 
 
-        #region Edit User
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult EditUser(int id)
-        {
-            try
-            {
-                var userData = _admin.GetEditUserData(id);
-                return View(userData);
-            }
-            catch
-            {
-                _notyf.Error("Author could not be added. Please try again.");
-                return RedirectToAction("Index", "Admin");
-            }
-        }
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public IActionResult EditUser(UserDto userDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(userDto);
-            }
-            try
-            {
-                bool check = CheckEmailExist(userDto.Email);
-
-                if (check)
-                {
-                    _notyf.Error("Email already exist!");
-                    return RedirectToAction("EditUser", userDto.UserId);
-                }
-                else
-                {
-                    var updated = _admin.EditUserDataPost(userDto);
-                    if (updated)
-                    {
-                        _notyf.Success("User updated successfully");
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else
-                    {
-                        _notyf.Error("Error in updating user... Please try again!");
-                        return RedirectToAction("Index", "Admin");
-                    }
-                }
-            }
-            catch
-            {
-                _notyf.Error("Author could not be added. Please try again.");
-                return View(userDto);
-            }
-        }
-
-        #endregion
-
-
-        #region Edit Book
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult EditBook(int id)
-        {
-            try
-            {
-                var bookData = _admin.GetEditBookData(id);
-                return View(bookData);
-            }
-            catch
-            {
-                _notyf.Error("Author could not be added. Please try again.");
-                return RedirectToAction("Index", "Admin");
-            }
-        }
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public IActionResult EditBook(AddEditBookDto addEditBookDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(addEditBookDto);
-            }
-
-            try
-            {
-                var updated = _admin.EditBookDataPost(addEditBookDto);
-                if (updated)
-                {
-                    _notyf.Success("Book updated successfully");
-                    return RedirectToAction("Index", "Admin");
-                }
-                else
-                {
-                    _notyf.Error("Error in updating book... Please try again!");
-                    return RedirectToAction("EditBook", addEditBookDto.BookId);
-                }
-            }
-            catch
-            {
-                _notyf.Error("Book could not be modified. Please try again.");
-                return RedirectToAction("EditBook", addEditBookDto.BookId);
-            }
-
-        }
-
-        #endregion
-
-
         #region Assign Book
 
 
@@ -557,5 +310,277 @@ namespace LMS_Main.Controllers
 
         #endregion
 
+
+        #region AddEditUser
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult AddEditUser(int? id)
+        {
+            AddEditUserDto addEditUserDto;
+
+            if (id.HasValue)
+            {
+                addEditUserDto = _admin.GetEditUserData(id.Value);
+            }
+            else
+            {
+                addEditUserDto = new AddEditUserDto();
+            }
+
+            return View("AddEditUser", addEditUserDto);
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult AddEditUser(AddEditUserDto addEditUserDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("AddEditUser", addEditUserDto);
+            }
+
+            try
+            {
+                bool emailExists = _admin.CheckEmailExist(addEditUserDto.Email);
+
+                if (emailExists && !addEditUserDto.UserId.HasValue) // If editing, allow the same email
+                {
+                    ModelState.AddModelError("Email", "Email already exists!");
+                    return View("AddEditUser", addEditUserDto);
+                }
+
+                if (addEditUserDto.UserId.HasValue)
+                {
+                    var updated = _admin.EditUserDataPost(addEditUserDto);
+                    _notyf.Success("User updated successfully");
+                }
+                else
+                {
+                    var loggedIn = "";
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        loggedIn = User.FindFirst("UserId")?.Value;
+                    }
+
+                    var added = _admin.AdminAddUserPost(addEditUserDto, loggedIn);
+                    _notyf.Success("User added successfully");
+                }
+
+                return RedirectToAction("Index", "Admin");
+            }
+            catch
+            {
+                _notyf.Warning("An error occurred. Please try again.");
+                return View("AddEditUser", addEditUserDto);
+            }
+        }
+
+
+        #endregion
+
+
+        #region AddEditBook
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult AddEditBook(int? bookId)
+        {
+            try
+            {
+                var data = new AddEditBookDto();
+
+                if (bookId.HasValue)
+                {
+                    data = _admin.GetEditBookData(bookId.Value);
+                }
+                else
+                {
+                    data = _admin.GetAddBookData();
+                }
+
+                return View(data);
+            }
+            catch
+            {
+                _notyf.Warning("Please try again..!");
+                return RedirectToAction("Index", "Admin");
+            }
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public IActionResult AddEditBook(AddEditBookDto addEditBookDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(addEditBookDto);
+            }
+
+            try
+            {
+                var loggedIn = User.Identity.IsAuthenticated ? User.FindFirst("UserId")?.Value : "";
+                bool result;
+
+                if (addEditBookDto.BookId == 0)
+                {
+                    result = _admin.AdminAddBookPost(addEditBookDto, loggedIn);
+                    if (result)
+                    {
+                        _notyf.Success("Book added successfully!");
+                    }
+                    else
+                    {
+                        _notyf.Error("Error in adding the book!");
+                    }
+                }
+                else
+                {
+                    result = _admin.AdminEditBookPost(addEditBookDto, loggedIn);
+                    if (result)
+                    {
+                        _notyf.Success("Book updated successfully!");
+                    }
+                    else
+                    {
+                        _notyf.Error("Error in updating the book!");
+                    }
+                }
+
+                return RedirectToAction("Index", "Admin");
+            }
+            catch
+            {
+                _notyf.Warning("Please try again..!");
+                return View(addEditBookDto);
+            }
+        }
+
+
+        #endregion
+
+
+        #region ExportData
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult ExportData(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    _notyf.Error("Something went wrong, Please try again..!");
+                    return RedirectToAction("Index", "Admin");
+                }
+                
+                else if (id == 1)
+                {
+                    var data = _admin.GetUsers();
+
+                    using (var package = new ExcelPackage())
+                    {
+                        var worksheet = package.Workbook.Worksheets.Add("Users");
+                        worksheet.Cells[1, 1].Value = "Name";
+                        worksheet.Cells[1, 2].Value = "Email";
+                        worksheet.Cells[1, 3].Value = "Phone Number";
+                        worksheet.Cells[1, 4].Value = "Address";
+                        worksheet.Cells[1, 5].Value = "Role";
+
+                        for (int i = 0; i < data.Count; i++)
+                        {
+                            worksheet.Cells[i + 2, 1].Value = data[i].Name;
+                            worksheet.Cells[i + 2, 2].Value = data[i].Email;
+                            worksheet.Cells[i + 2, 3].Value = data[i].PhoneNumber;
+                            worksheet.Cells[i + 2, 4].Value = data[i].Address;
+                            worksheet.Cells[i + 2, 5].Value = data[i].RoleName;
+                        }
+
+                        var stream = new MemoryStream();
+                        package.SaveAs(stream);
+                        var content = stream.ToArray();
+                        var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        var fileName = "UsersList.xlsx";
+
+                        return File(content, contentType, fileName);
+                    }
+                }
+                
+                else if (id == 2)
+                {
+                    var data = _admin.GetBooks();
+
+                    using (var package = new ExcelPackage())
+                    {
+                        var worksheet = package.Workbook.Worksheets.Add("Books");
+                        worksheet.Cells[1, 1].Value = "Title";
+                        worksheet.Cells[1, 2].Value = "Copies";
+                        worksheet.Cells[1, 3].Value = "Price";
+                        worksheet.Cells[1, 4].Value = "Author Name";
+                        worksheet.Cells[1, 5].Value = "Publication Name";
+                        worksheet.Cells[1, 6].Value = "Language Name";
+
+                        for (int i = 0; i < data.Count; i++)
+                        {
+                            worksheet.Cells[i + 2, 1].Value = data[i].Title;
+                            worksheet.Cells[i + 2, 2].Value = data[i].Copies;
+                            worksheet.Cells[i + 2, 3].Value = data[i].Price;
+                            worksheet.Cells[i + 2, 4].Value = data[i].AuthorName;
+                            worksheet.Cells[i + 2, 5].Value = data[i].PublicationName;
+                            worksheet.Cells[i + 2, 6].Value = data[i].LanguageName;
+                        }
+
+                        var stream = new MemoryStream();
+                        package.SaveAs(stream);
+                        var content = stream.ToArray();
+                        var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        var fileName = "BooksList.xlsx";
+
+                        return File(content, contentType, fileName);
+                    }
+                }
+                
+                else
+                {
+                    var data = _admin.GetAssignedBooks();
+
+                    using (var package = new ExcelPackage())
+                    {
+                        var worksheet = package.Workbook.Worksheets.Add("Assigned Books");
+                        worksheet.Cells[1, 1].Value = "BookName";
+                        worksheet.Cells[1, 2].Value = "UserName";
+                        worksheet.Cells[1, 3].Value = "IssuedDate";
+                        worksheet.Cells[1, 4].Value = "ReturnDate";
+                        worksheet.Cells[1, 5].Value = "Status";
+
+                        for (int i = 0; i < data.Count; i++)
+                        {
+                            worksheet.Cells[i + 2, 1].Value = data[i].BookName;
+                            worksheet.Cells[i + 2, 2].Value = data[i].UserName;
+                            worksheet.Cells[i + 2, 3].Value = data[i].IssuedDate;
+                            worksheet.Cells[i + 2, 4].Value = data[i].ReturnDate;
+                            worksheet.Cells[i + 2, 5].Value = data[i].StatusName;
+                        }
+
+                        var stream = new MemoryStream();
+                        package.SaveAs(stream);
+                        var content = stream.ToArray();
+                        var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        var fileName = "AssignedBooksList.xlsx";
+
+                        return File(content, contentType, fileName);
+                    }
+                }
+            }
+            catch
+            {
+                _notyf.Error("Please try again..!");
+                return RedirectToAction("Index", "Admin");
+            }
+        }
+
+        #endregion
     }
 }

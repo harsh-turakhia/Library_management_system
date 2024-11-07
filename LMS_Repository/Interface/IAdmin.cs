@@ -23,7 +23,7 @@ namespace LMS_Repository.Interface
 
         bool CheckEmailExist(string email);
 
-        bool AdminAddUserPost(RegisterDto registerDto, string loggedIn);
+        bool AdminAddUserPost(AddEditUserDto addEditUserDto, string loggedIn);
 
         AddEditBookDto GetAddBookData();
 
@@ -39,9 +39,9 @@ namespace LMS_Repository.Interface
 
         List<Authors> AddAuthorPost(string authorName);
 
-        UserDto GetEditUserData(int id);
+        AddEditUserDto GetEditUserData(int id);
 
-        bool EditUserDataPost(UserDto userDto);
+        bool EditUserDataPost(AddEditUserDto addEditUserDto);
 
         AddEditBookDto GetEditBookData(int id);
 
@@ -54,5 +54,13 @@ namespace LMS_Repository.Interface
         AssignedBooksDto GetAssignedBookData(int id);
 
         (bool result, string message) ReturnBookPost(AssignedBooksDto assignedBooksDto);
+
+        bool AdminEditBookPost(AddEditBookDto addEditBookDto, string loggedIn);
+
+        List<UserDto> GetUsers();
+
+        List<BooksDto> GetBooks();
+
+        List<AssignedBooksDto> GetAssignedBooks();
     }
 }

@@ -8,12 +8,12 @@ using System.Diagnostics;
 using System.Security.Claims;
 using Library_management_system.Models;
 using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMS_Main.Controllers
 {
     public class HomeController : Controller
     {
-
         private readonly INotyfService _notyf;
         private readonly IHome _home;
         private readonly IAuth _auth;
@@ -25,9 +25,9 @@ namespace LMS_Main.Controllers
             _auth = auth;
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Login()    
+        public async Task<IActionResult> Login()
         {
             //var loggedIn = "";
 
@@ -60,10 +60,9 @@ namespace LMS_Main.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Login", "Home");
+                return View();
             }
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
@@ -73,23 +72,21 @@ namespace LMS_Main.Controllers
         {
             try
             {
-                if (loginDto.Email == null || loginDto.Password == null)
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(loginDto);
-                }
-                var user = _auth.authenticateUser(loginDto.Email, loginDto.Password);
 
-                if (user == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    _notyf.Error("User do not exist");
-                    return View();
-                }
-                else
-                {
-                    //Claims are key-value pairs that represent user data. They are used in authentication and authorization processes.
-                    var claims = new List<Claim>
+                    var user = _auth.authenticateUser(loginDto.Email, loginDto.Password);
+
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        _notyf.Error("User do not exist");
+                        return View();
+                    }
+                    else
+                    {
+                        //Claims are key-value pairs that represent user data. They are used in authentication and authorization processes.
+                        var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Email, user.Email),
                         new Claim(ClaimTypes.Role, user.RoleName),
@@ -97,40 +94,42 @@ namespace LMS_Main.Controllers
                     };
 
 
-                    // Create claims identity
-                    // it indicates that the claims are associated with cookie-based authentication.
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        // Create claims identity
+                        // it indicates that the claims are associated with cookie-based authentication.
+                        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = true,
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(15)
-                    };
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTime.UtcNow.AddMinutes(15)
+                        };
 
-                    // HttpContext.SignInAsync: This method is used to sign in the user and create an authentication cookie.
-                    // CookieAuthenticationDefaults.AuthenticationScheme: This specifies the authentication scheme to use, which is cookie-based authentication in this case.
-                    // ClaimsPrincipal represents the user and their associated claims.
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        authProperties);
+                        // HttpContext.SignInAsync: This method is used to sign in the user and create an authentication cookie.
+                        // CookieAuthenticationDefaults.AuthenticationScheme: This specifies the authentication scheme to use, which is cookie-based authentication in this case.
+                        // ClaimsPrincipal represents the user and their associated claims.
+                        await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity),
+                            authProperties);
 
-                    if (user.RoleName == "Admin")
-                    {
-                        _notyf.Success("Login Successfull");
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    else if (user.RoleName == "Librarian")
-                    {
-                        _notyf.Success("Login Successfull");
-                        return RedirectToAction("Index", "Lib");
-                    }
-                    else
-                    {
-                        _notyf.Success("Login Successfull");
-                        return RedirectToAction("Index", "User");
+                        if (user.RoleName == "Admin")
+                        {
+                            _notyf.Success("Login Successfull");
+                            return RedirectToAction("Index", "Admin");
+                        }
+                        else if (user.RoleName == "Librarian")
+                        {
+                            _notyf.Success("Login Successfull");
+                            return RedirectToAction("Index", "Lib");
+                        }
+                        else
+                        {
+                            _notyf.Success("Login Successfull");
+                            return RedirectToAction("Index", "User");
+                        }
                     }
                 }
+                return View(loginDto);
             }
             catch (Exception ex)
             {
@@ -139,7 +138,7 @@ namespace LMS_Main.Controllers
             }
         }
 
-            
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -208,6 +207,13 @@ namespace LMS_Main.Controllers
                 _notyf.Warning("Exception occured");
                 return RedirectToAction("Login", "Home");
             }
+        }
+
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
         }
 
     }

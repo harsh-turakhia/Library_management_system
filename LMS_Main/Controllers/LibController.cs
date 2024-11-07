@@ -92,83 +92,7 @@ namespace LMS_Main.Controllers
 
         #endregion
 
-
-        #region Librarian Dashboard
-
-
-        [Authorize(Roles = "Librarian")]
-        [HttpGet]
-        public IActionResult AddUser()
-        {
-            try
-            {
-                var data = _lib.GetAddUserData();
-                return View(data);
-            }
-            catch
-            {
-                _notyf.Warning("Please try again..!");
-                return View("Index", "Lib");
-            }
-        }
-
-
-        [HttpPost]
-        public bool CheckEmailExist(string email)
-        {
-            return _lib.CheckEmailExist(email);
-        }
-
-        [Authorize(Roles = "Librarian")]
-        [HttpPost]
-        public IActionResult AddUser(RegisterDto registerDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(registerDto);
-            }
-
-            try
-            {
-                bool check = CheckEmailExist(registerDto.Email);
-
-                if (check)
-                {
-                    _notyf.Error("Email already exist..!");
-                    return View(registerDto);
-                }
-                else
-                {
-                    var loggedIn = "";
-                    if (User.Identity.IsAuthenticated)
-                    {
-                        loggedIn = User.FindFirst("UserId")?.Value;
-                    }
-                    var added = _lib.LibAddUserPost(registerDto, loggedIn);
-
-                    if (added)
-                    {
-                        _notyf.Success("User added successfully..!");
-                        return RedirectToAction("Index", "Lib");
-                    }
-                    else
-                    {
-                        _notyf.Error("Error in adding the user..!");
-                        return View(registerDto);
-                    }
-                }
-
-            }
-            catch
-            {
-                _notyf.Warning("Please try again..!");
-                return View(registerDto);
-            }
-        }
-
-        #endregion
-
-
+               
         #region Add Book
 
 
@@ -282,61 +206,7 @@ namespace LMS_Main.Controllers
             }
         }
 
-        #endregion
-
-
-        #region Edit User
-
-
-        [Authorize(Roles = "Librarian")]
-        [HttpGet]
-        public IActionResult EditUser(int id)
-        {
-            try
-            {
-                var userData = _admin.GetEditUserData(id);
-                return View(userData);
-            }
-            catch
-            {
-                _notyf.Error("Author could not be added. Please try again.");
-                return RedirectToAction("Index", "Lib");
-            }
-        }
-
-
-        [Authorize(Roles = "Librarian")]
-        [HttpPost]
-        public IActionResult EditUser(UserDto userDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(userDto);
-            }
-            try
-            {
-                var updated = _admin.EditUserDataPost(userDto);
-                if (updated)
-                {
-                    _notyf.Success("User updated successfully");
-                    return RedirectToAction("Index", "Lib");
-                }
-                else
-                {
-                    _notyf.Error("Error in updating user... Please try again!");
-                    return RedirectToAction("Index", "Lib");
-                }
-
-            }
-            catch
-            {
-                _notyf.Error("Author could not be added. Please try again.");
-                return View(userDto);
-            }
-        }
-
-        #endregion
-
+        #endregion       
 
         #region Edit Book
 
@@ -551,6 +421,157 @@ namespace LMS_Main.Controllers
                 return View("Index", "Lib");
             }
         }
+
+        #endregion
+
+
+        #region AddEditUser
+
+        [Authorize(Roles = "Librarian")]
+        [HttpGet]
+        public IActionResult AddEditUser(int? id)
+        {
+            AddEditUserDto addEditUserDto;
+
+            if (id.HasValue)
+            {
+                addEditUserDto = _admin.GetEditUserData(id.Value);
+            }
+            else
+            {
+                addEditUserDto = new AddEditUserDto();
+            }
+
+            return View("AddEditUser", addEditUserDto);
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Librarian")]
+        public IActionResult AddEditUser(AddEditUserDto addEditUserDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("AddEditUser", addEditUserDto);
+            }
+
+            try
+            {
+                bool emailExists = _admin.CheckEmailExist(addEditUserDto.Email);
+
+                if (emailExists && !addEditUserDto.UserId.HasValue)
+                {
+                    ModelState.AddModelError("Email", "Email already exists!");
+                    return View("AddEditUser", addEditUserDto);
+                }
+
+                if (addEditUserDto.UserId.HasValue)
+                {
+                    var updated = _admin.EditUserDataPost(addEditUserDto);
+                    _notyf.Success("User updated successfully");
+                }
+                else
+                {
+                    var loggedIn = "";
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        loggedIn = User.FindFirst("UserId")?.Value;
+                    }
+
+                    var added = _admin.AdminAddUserPost(addEditUserDto, loggedIn);
+                    _notyf.Success("User added successfully");
+                }
+
+                return RedirectToAction("Index", "Lib");
+            }
+            catch
+            {
+                _notyf.Warning("An error occurred. Please try again.");
+                return View("AddEditUser", addEditUserDto);
+            }
+        }
+
+
+        #endregion
+
+
+        #region AddEditBook
+
+        [Authorize(Roles = "Librarian")]
+        [HttpGet]
+        public IActionResult AddEditBook(int? bookId)
+        {
+            try
+            {
+                var data = new AddEditBookDto();
+
+                if (bookId.HasValue)
+                {
+                    data = _admin.GetEditBookData(bookId.Value);
+                }
+                else
+                {
+                    data = _admin.GetAddBookData();
+                }
+
+                return View(data);
+            }
+            catch
+            {
+                _notyf.Warning("Please try again..!");
+                return RedirectToAction("Index", "Lib");
+            }
+        }
+
+
+        [Authorize(Roles = "Librarian")]
+        [HttpPost]
+        public IActionResult AddEditBook(AddEditBookDto addEditBookDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(addEditBookDto);
+            }
+
+            try
+            {
+                var loggedIn = User.Identity.IsAuthenticated ? User.FindFirst("UserId")?.Value : "";
+                bool result;
+
+                if (addEditBookDto.BookId == 0)
+                {
+                    result = _admin.AdminAddBookPost(addEditBookDto, loggedIn);
+                    if (result)
+                    {
+                        _notyf.Success("Book added successfully!");
+                    }
+                    else
+                    {
+                        _notyf.Error("Error in adding the book!");
+                    }
+                }
+                else
+                {
+                    result = _admin.AdminEditBookPost(addEditBookDto, loggedIn);
+                    if (result)
+                    {
+                        _notyf.Success("Book updated successfully!");
+                    }
+                    else
+                    {
+                        _notyf.Error("Error in updating the book!");
+                    }
+                }
+
+                return RedirectToAction("Index", "Lib");
+            }
+            catch
+            {
+                _notyf.Warning("Please try again..!");
+                return View(addEditBookDto);
+            }
+        }
+
 
         #endregion
 

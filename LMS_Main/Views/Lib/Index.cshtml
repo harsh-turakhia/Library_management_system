@@ -6,7 +6,7 @@
     <div class="py-6">
 
         <!-- Card stats -->
-        <div class="row g-6 mb-6">
+        <div class="row g-4 mb-5">
 
             <div class="col-xl-4 col-sm-6 col-12">
                 <div class="card shadow border-0 bg-primary" style="--bs-bg-opacity: .2;">
@@ -23,14 +23,14 @@
                             </div>
                         </div>
                         <div class="mt-2 mb-0 text-sm d-flex justify-content-end">
-                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AddUser" asp-controller="Lib">Add User</a>
+                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AddEditUser" asp-controller="Lib">Add User</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-xl-4 col-sm-6 col-12">
-                <div class="card shadow border-0 bg-primary" style="--bs-bg-opacity: .2;">
+                <div class="card shadow border-0 bg-success" style="--bs-bg-opacity: .2;">
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
@@ -44,14 +44,14 @@
                             </div>
                         </div>
                         <div class="mt-2 mb-0 text-sm d-flex justify-content-end">
-                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AddBook" asp-controller="Lib">Add Book</a>
+                            <a class="text-nowrap btn bg-primary text-white bg-opacity-100" asp-action="AddEditBook" asp-controller="Lib">Add Book</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-xl-4 col-sm-6 col-12">
-                <div class="card shadow border-0 bg-primary" style="--bs-bg-opacity: .2;">
+                <div class="card shadow border-0 bg-info" style="--bs-bg-opacity: .2;">
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
@@ -75,68 +75,49 @@
 
     </div>
 
-    <div class="my-4 py-4">
+    <div class="pt-2 pb-3">
 
-        <ul class=" nav nav-pills nav-fill border border-1">
-            <li class="border-2 nav-item" role="presentation">
-                <a class="nav-link active" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button"
-                   role="tab" aria-controls="user" aria-selected="true" href="" style="opacity: 0.9">
-                    Users
-                </a>
+        <ul class="nav nav-tabs justify-content-center" id="myTab">
+            <li class="nav-item px-3">
+                <a class="nav-link active" id="user-tab" data-bs-toggle="tab" href="#user"><i class="bi bi-person-circle"></i> Users</a>
             </li>
-            <li class="border-2 nav-item" role="presentation">
-                <a class="nav-link" id="book-tab" data-bs-toggle="tab" data-bs-target="#book" type="button"
-                   role="tab" aria-controls="book" aria-selected="false" href="" style="opacity: 0.9">
-                    Total Books
-                </a>
+            <li class="nav-item px-3">
+                <a class="nav-link" id="book-tab" data-bs-toggle="tab" href="#book"><i class="bi bi-journal-check"></i> Total Books</a>
             </li>
-            <li class="border-2 nav-item" role="presentation">
-                <a class="nav-link" id="assignedBook-tab" data-bs-toggle="tab" data-bs-target="#assignedBook" type="button"
-                   role="tab" aria-controls="assignedBook" aria-selected="false" href="" style="opacity: 0.9">
-                    Assigned Books
-                </a>
+            <li class="nav-item px-3">
+                <a class="nav-link" id="assignedBook-tab" data-bs-toggle="tab" href="#assignedBook"><i class="bi bi-journal-check"></i> Assigned Books</a>
             </li>
         </ul>
 
-        <div class="tab-content mt-4" id="myTabContent">
+
+        <div class="tab-content mt-4" style="border: none;">
 
             <!-- User Tab Table -->
             <div class="tab-pane fade show active fs-5" id="user" role="tabpanel" aria-labelledby="user-tab">
 
-                <div class=" row my-3">
+                <div class="row my-3">
                     <div class="col-md-12 px-2">
                         <div class="input-group">
-                            <input type="text" class="border-2 rounded-3 form-control" id="searchUser" placeholder="Search Users..." aria-label="Search">
+                            <input type="text" class="border-2 rounded-3 form-control" id="searchUser" placeholder="Search users based on name, email or phone number" aria-label="Search">
                         </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end py-3">
+                        @*<a class="btn rounded-3 bg-primary text-white py-2 px-4" href="@Url.Action("ExportUsers", "Admin")">Export Data</a>*@
+                        <a class="btn rounded-3 bg-primary text-white py-2 px-4" asp-action="ExportData" asp-controller="Admin" asp-route-id="1">Export Data</a>
                     </div>
                 </div>
 
-                <div class="table-responsive pt-4">
-                    <table class="table table-hover text-center" id="userTableId">
-                        <thead class="table-light">
+                <div class="table-responsive pt-2">
+                    <table class="table table-hover text-center">
+                        <thead class="table-primary">
                             <tr>
-                                <th scope="col">
-                                    Name
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Email
-                                    @*<span onclick=""><i class="bi bi-arrow-down-up"></i></span>*@
-                                </th>
-                                <th scope="col">
-                                    Phone Number
-                                    @*<span onclick=""><i class="bi bi-arrow-down-up"></i></span>*@
-                                </th>
-                                <th scope="col">
-                                    Address
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Role
-                                </th>
-                                <th scope="col">
-                                    Actions
-                                </th>
+                                <th scope="col" class="sortable" data-sort="name">Name</th>
+                                <th scope="col" class="sortable" data-sort="email">Email</th>
+                                <th scope="col" class="sortable" data-sort="phone">Phone Number</th>
+                                <th scope="col" class="sortable" data-sort="address">Address</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="table-group-divider" id="userTableDivId">
@@ -150,7 +131,7 @@
                                     <td>@user.RoleName</td>
                                     <td>
                                         <div class="d-flex justify-content-center">
-                                            <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditUser" asp-route-id="@user.UserId" title="Edit User">
+                                            <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="AddEditUser" asp-route-id="@user.UserId" title="Edit User">
                                                 <i class="bi bi-pencil-fill"></i>
                                             </a>
                                             <button class="btn btn-outline-danger removeUserIcon" data-userid="@user.UserId" data-bs-toggle="modal" data-bs-target="#DeleteUserModalId" title="Delete User">
@@ -169,44 +150,29 @@
 
             <!-- Book Tab Table -->
             <div class="tab-pane fade fs-5" id="book" role="tabpanel" aria-labelledby="book-tab">
-
                 <div class="row my-3">
                     <div class="col-md-12 px-2">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="searchBook" placeholder="Search Books..." aria-label="Search">
+                            <input type="text" class="form-control" id="searchBook" placeholder="Search books via title, author or publication" aria-label="Search">
                         </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end py-3">
+                        <a class="btn rounded-3 bg-primary text-white py-2 px-4" asp-action="ExportData" asp-controller="Admin" asp-route-id="2">Export Data</a>
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive pt-2">
                     <table class="table table-hover text-center">
-                        <thead class="table-light">
+                        <thead class="table-success">
                             <tr>
-                                <th scope="col">
-                                    Title
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Publication
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Author
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Language
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Copies
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Price
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">Actions</th>
+                                <th>Title</th>
+                                <th>Publication</th>
+                                <th>Author</th>
+                                <th>Language</th>
+                                <th>Copies</th>
+                                <th>Price</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="bookTableDivId">
@@ -221,31 +187,12 @@
                                     <td>@book.Price</td>
                                     <td>
                                         <div class="d-flex justify-content-center">
-                                            @if (book.RemainingCopies > 0)
-                                            {
-                                                <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="AssignBookByBook" asp-route-id="@book.BookId" title="Assign Book">
-                                                    <i class="bi bi-file-plus-fill"></i>
-                                                </a>
-                                                <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditBook" asp-route-id="@book.BookId" title="Edit Book">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </a>
-                                                <button class="btn btn-outline-danger removeBookIcon" data-bookId="@book.BookId" data-bs-toggle="modal" data-bs-target="#DeleteBookModalId" title="Delete Book">
-                                                    <i class="bi bi-trash3-fill"></i>
-                                                </button>
-                                            }
-                                            else
-                                            {
-                                                <a class="btn btn-outline-primary me-2 disabled" asp-controller="Lib" asp-action="AssignBookByBook" asp-route-id="@book.BookId" title="Assign Book">
-                                                    <i class="bi bi-file-plus-fill"></i>
-                                                </a>
-                                                <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditBook" asp-route-id="@book.BookId" title="Edit Book">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </a>
-                                                <button class="btn btn-outline-danger removeBookIcon" data-bookId="@book.BookId" data-bs-toggle="modal" data-bs-target="#DeleteBookModalId" title="Delete Book">
-                                                    <i class="bi bi-trash3-fill"></i>
-                                                </button>
-                                            }
-
+                                            <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="AddEditBook" asp-route-bookId="@book.BookId" title="Edit Book">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                            <button class="btn btn-outline-danger removeBookIcon" data-bookId="@book.BookId" data-bs-toggle="modal" data-bs-target="#DeleteBookModalId" title="Delete Book">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -257,46 +204,28 @@
 
             <!-- Assigned Book Tab Table -->
             <div class="tab-pane fade fs-5" id="assignedBook" role="tabpanel" aria-labelledby="assignedBook-tab">
-
                 <div class="row my-3">
                     <div class="col-md-12 px-2">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="searchAssignBook" placeholder="Search Assigned Books..." aria-label="Search">
+                            <input type="text" class="form-control" id="searchAssignBook" placeholder="Search assigned books via title" aria-label="Search">
                         </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end py-3">
+                        <a class="btn rounded-3 bg-primary text-white py-2 px-4" asp-action="ExportData" asp-controller="Admin" asp-route-id="3">Export Data</a>
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive pt-2">
                     <table class="table table-hover text-center">
-                        <thead class="table-light">
+                        <thead class="table-info">
                             <tr>
-                                <th scope="col">
-                                    Title
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Assigned To
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Issued Date
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Return Date
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Returned On
-                                    @*<span onclick="" class="bi bi-arrow-down-up"></></span>*@
-                                </th>
-                                <th scope="col">
-                                    Status
-                                </th>
-                                <th>
-                                    Actions
-
-                                </th>
+                                <th>Title</th>
+                                <th>Assigned To</th>
+                                <th>Issued Date</th>
+                                <th>Return Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="assignedBookTableDivId">
@@ -305,11 +234,18 @@
                                 <tr>
                                     <td>@assignBook.BookName</td>
                                     <td>@assignBook.UserName</td>
-                                    @*<td>Lib</td>*@
                                     <td>@assignBook.IssuedDate</td>
                                     <td>@assignBook.ReturnDate</td>
-                                    <td>@assignBook.ReturnedOn</td>
-                                    <td>@assignBook.StatusName</td>
+                                    <td>
+                                        @if (assignBook.StatusName == "Assigned")
+                                        {
+                                            <span class="bg-success p-1 rounded-2 text-white">@assignBook.StatusName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="bg-warning p-1 rounded-2 text-white">@assignBook.StatusName</span>
+                                        }
+                                    </td>
                                     <td>
                                         <div class="d-flex justify-content-center">
                                             <a class="btn btn-outline-primary me-2" asp-controller="Lib" asp-action="EditAssignBook" asp-route-id="@assignBook.AssignedId" title="Edit Book">
@@ -323,9 +259,7 @@
                     </table>
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
 
